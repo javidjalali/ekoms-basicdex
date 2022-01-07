@@ -1,0 +1,43 @@
+Guia/ejercicio hacer un dex
+    Evitar simplemente copiar el códido, faciliando la comprensión del funcionamiento.
+
+Solidity
+
+1. Desarrollo Smart Contracts
+
+1.1. Crear un registro de tokens:
+    Contrato DEX.sol
+        Contiene una relación entre tickers y Tokens, donde los Tokens están representados por el ticker y la dirección de su contrato. (lista indizada de tokens. pista: en solidity no hay map().)
+        función addToken restringida a administradores
+
+1.2. Crear una Wallet donde los traders puedan transferir y retirar sus tokens
+    Actualizar el contrato DEX con el balance de los traders (pista: tenerlo en cuenta en las funciones deposit y withdraw) e incluir  funciones para depositar y retirar tokens. Para ello se necesita un puntero al Token ERC20 al que se refiere cada ticker. Eso requiere utilizar la interfaz ERC20: usar el objeto IERC20.
+        Se instancia el objeto utilizando como parametros la dirección del contrato asociada al ticker y se utiliza su funcion transferFrom(msg.sender, address(this) (éste Smart Contract), amount)
+        Pista: pensar en cosas importantes que necesiten un require.
+
+1.3 mockear tokens
+    - Dai mock [Token Dai Fake ] Crear un Smart Contract (Dai) que debe heredar de ERC20 [importar de open zepelin] e invocar al constructor de ERC20 con argumentos y cuerpo vacio.
+    - lo mismo con Augur (rep), Bat y ZRX
+
+1.4 limit orders
+
+    * un enumerado para el tipo de orden (compra o venta)
+    * un objeto que defina una orden limite (identificador, direccion del trader, tipo de orden, ticker, cantidad, filled, price y date)
+    * el orderbook: una relacion de ordenes indizada por ticker. su contenido seria otra relacion indizada por tipo de orden que contiene un array de ordenes
+        ** El libro de ordenes esta ordenado en funcion si es compra (mas a menos) o venta (menos a más)
+    * mecanismo para incrementar el id de las ordenes (aprender esto bien)
+    * funcion para la creacion de la orden. Parametros suficientes para crear un objeto de tipo orden. Ojo a los requires. Incorporar la orden en el libro, pero    manteniendo el orden en funcion del precio.
+
+1.5 market orders
+    el principal problema es que no conocemos el precio, hay que ur mirando el order book, filled de la orden, etc.
+        por cada orden que se quiera matchear hay que emitir un evento NewTrade con la informacion necesaria (id trade, id orden, ticker, addres de los traders, la cantidad filled, precio y fecha). 
+        Actualizar balances despues (wn funcion de si es compra o venta)
+        Eliminar ordenes matcheadas
+    
+
+    
+
+2. Testear Smart Contract
+2.1 desplegar contratos
+2.2 inicializar amounts
+2.3 testear funcion a funcion
