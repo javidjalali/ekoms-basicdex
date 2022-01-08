@@ -163,12 +163,23 @@ contract Dex {
       * @param _ticker: short name of the token to deposit
       * @param _amount: amount of token
       */
-    function deposit(bytes32  _ticker, uint256  _amount) external validateTransferInterface(msg.sender, _ticker, _amount) {
+    function deposit(
+        bytes32  _ticker, 
+        uint256  _amount
+    ) 
+        external 
+        validateTransferInterface(
+            msg.sender, 
+            _ticker, 
+            _amount
+        ) 
+    {
         IERC20 token = IERC20(tokenList[_ticker].contractAddress);
-        if (token.balanceOf(msg.sender) < _amount) revert invalidAmount(_amount, "Insufficient balance in address");
-        else {
-            token.transferFrom(msg.sender, address(this), _amount);
-            balances[msg.sender][_ticker] += _amount;
+        if (token.balanceOf(msg.sender) < _amount) {
+          revert invalidAmount(_amount, "Insufficient balance in address");
+        } else {
+              token.transferFrom(msg.sender, address(this), _amount);
+              balances[msg.sender][_ticker] += _amount;
         }
     }
 
@@ -210,7 +221,8 @@ contract Dex {
     }
 
     /**
-      * @notice Requires the sender to be the admin of the contract. Otherwise will throw a custom error.
+      * @notice Requires the sender to be the admin of the contract. 
+      *         Otherwise will throw a custom error.
       */
     modifier onlyAdmin() {
         if (msg.sender != admin)
@@ -387,9 +399,10 @@ contract Dex {
     }
 
     /**
-      * @notice Execute a market order. Will buy until the '_side' order is filled or all '!_side' orders are filled
-      * 
-      * @dev modifier validates the trader have enough balance of USDT (if _side is buy) or '_ticker' token (if _side
+      * @notice Execute a market order. 
+      *         Will buy until the '_side' order is filled or all '!_side' orders are filled
+      * @dev modifier validates the trader have enough balance of USDT (if _side is buy) or 
+      *      '_ticker' token (if _side
       *      is sell).
       * @param _ticker ticker
       * @param _amount amount
@@ -411,13 +424,15 @@ contract Dex {
         bool completed = false;
         while (i < matchOrders.length && !completed) {
             //Seller has at least the same amount of tokens than the buyer's amount left to buy.
-            if (matchOrders[i].amount - matchOrders[i].filled >=  mktOrder.amount - mktOrder.filled) {
-                matchOrders[i].filled += matchOrders[i].amount;
-                mktOrder.filled = mktOrder.amount;
-                completed = true;
-            }
-            //The seller's amount will not satisfy whole buyer's order
-            else {
+            if (
+                matchOrders[i].amount - matchOrders[i].filled >=  
+                mktOrder.amount - mktOrder.filled
+                ) {
+                    matchOrders[i].filled += matchOrders[i].amount;
+                    mktOrder.filled = mktOrder.amount;
+                    completed = true;
+            } else { 
+                //The seller's amount will not satisfy whole buyer's order
                 mktOrder.filled = matchOrders[i].amount - matchOrders[i].filled;
                 matchOrders[i].filled = matchOrders[i].amount;
                 matchOrders.pop();
