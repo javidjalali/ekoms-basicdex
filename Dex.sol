@@ -2,7 +2,7 @@
 pragma solidity ^0.8.11;
 
 //IERC20 interface to manage ERC20 Tokens.
-import "/home/jalali/Projects/playground/EatTheBlocks/Dex/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol";  
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 // Manages the logic of the decentralized exchange.
