@@ -475,5 +475,5 @@ contract Dex {
     /** 
       * @notice This custom error will be raised validating amounts of tokens
       */
-    error invalidAmount(uint256, bytes32);
+    error invalidAmount(uint256, bytes32); 
 }
