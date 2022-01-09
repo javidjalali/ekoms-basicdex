@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.11;
+pragma solidity >=0.4.22 <0.9.0;
 
 //IERC20 interface to manage ERC20 Tokens.
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -88,6 +88,8 @@ contract Dex {
       */
     address[] traderList;
 
+    mapping(bytes32 => Token) public tokens;
+
     /**
       * @notice Contract constructor. 
       *         Runs after deployment and grants admin rights to the deployer.
@@ -101,7 +103,7 @@ contract Dex {
       * @return array of tickers
       */
     function getTickerList() public view returns (bytes32[] memory) {
-      return tickerList;
+        return tickerList;
     }
 
     /**
@@ -113,7 +115,22 @@ contract Dex {
       * @return uint with the amount of '_ticker' tokens
       */
     function getBalance(address  _trader, bytes32  _ticker) public view returns (uint) {
-      return balances[_trader][_ticker];
+        return balances[_trader][_ticker];
+    }
+
+    function getOrders(bytes32 _ticker, OrderSide _side) external view returns(Order[] memory) {
+        return orderBook[_ticker][_side];
+    }
+
+      function getTokens() external view returns(Token[] memory) {
+          Token[] memory _tokens = new Token[](tickerList.length);
+          for (uint i = 0; i < tickerList.length; i++) {
+            _tokens[i] = Token(
+              tokens[tickerList[i]].ticker,
+              tokens[tickerList[i]].contractAddress
+            );
+          }
+          return _tokens;
     }
 
     /**
